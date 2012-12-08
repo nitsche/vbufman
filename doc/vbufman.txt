@@ -1,0 +1,102 @@
+*vbufman.txt*                                          Simple buffer management
+
+CONTENTS                                                     *vbufman-contents*
+
+    1 Introduction ............................... |vbufman-intro|
+    2 Usage ...................................... |vbufman-usage|
+    3 Options .................................... |vbufman-options|
+        3.1 Mapping .............................. |g:vbufman_mapping|
+        3.2 Hidden Buffers ....................... |g:vbufman_show_hidden|
+        3.3 Vertical Splits ...................... |g:vbufman_split_vertical|
+        3.4 Maximum Window Size .................. |g:vbufman_max_window_size|
+        3.5 List Marker .......................... |g:vbufman_list_marker|
+        3.6 Prompt Prefix ........................ |g:vbufman_prompt_prefix|
+    4 Commands ................................... |vbufman-commands|
+
+===============================================================================
+1 INTRODUCTION                                                  *vbufman-intro*
+
+vbufman is a very simple and easy to use buffer management plugin. It shows a
+list of all buffers that matches a given filter and let you open a selected
+buffer from that list.
+
+===============================================================================
+2 USAGE                                                         *vbufman-usage*
+
+Pressing the specified mapping (see |vbufman-mapping|) or running a command
+(see |vbufman-commands|) opens a list of buffers and waits for user input.
+Now you can type a pattern a buffer name should match and the list is updated
+automatically. Cancel your action with |<Esc>| or open the selected buffer
+with |<Return>|. To navigate the buffer list use the |<Up>| and |<Down>| keys.
+If you hold the |ctrl| key while pressing |<Return>| key the selected buffer
+is opened in a split window.
+
+===============================================================================
+3 OPTIONS                                                     *vbufman-options*
+
+There are some options to influence the behavior and the look of the plugin.
+The given variable declaration shows the name and the default value of the
+variable.
+
+-------------------------------------------------------------------------------
+3.1 Mapping                                                 *g:vbufman_mapping*
+
+>
+    let g:vbufman_mapping = "<C-B>"
+<
+Use this variable to set the mapping to start vbufman.
+
+-------------------------------------------------------------------------------
+3.2 Hidden Buffers                                      *g:vbufman_show_hidden*
+
+>
+    let g:vbufman_show_hidden = 0
+<
+Use this variable to include or exclude unlisted buffers.
+
+-------------------------------------------------------------------------------
+3.3 Vertical Splits                                  *g:vbufman_split_vertical*
+
+>
+    let g:vbufman_split_vertical = 0
+<
+Use this variable to do a vertical split action whenever a window is splitted.
+
+-------------------------------------------------------------------------------
+3.4 Maximum Window Size                             *g:vbufman_max_window_size*
+
+>
+    let g:vbufman_max_window_size = 10
+<
+Use this variable to specify the maximum number of visible lines the buffer
+list window should contain. If this value is less than one the default value
+will be used.
+
+-------------------------------------------------------------------------------
+3.5 List Marker                                         *g:vbufman_list_marker*
+
+>
+    let g:vbufman_list_marker = "\u25ba "
+<
+Use this variable to specify the marker icon of the buffer list. This icon is
+printed at the start of the selected line. Unselected lines are indented
+accordingly. There are no extra whitespaces between the icon and the buffer
+name. So the icon should include any whitespaces needed.
+
+-------------------------------------------------------------------------------
+3.6 Prompt Prefix                                     *g:vbufman_prompt_prefix*
+
+>
+    let g:vbufman_prompt_prefix = "> "
+<
+Use this variable to specify the prefix of the filter prompt. This icon is
+printed at the start of the command line. There are no extra whitespaces
+between the prefix and given input. So the prefix should include any
+whitespaces needed.
+
+===============================================================================
+4 COMMANDS                                                   *vbufman-commands*
+
+:Bufman [filter]
+	Opens the buffer manager. If the 'filter' argument is given it is used
+	for the initial filter string. Otherwise all buffers are listed.

@@ -1,4 +1,5 @@
 *vbufman.txt*                                          Simple buffer management
+*vbufman*
 
 CONTENTS                                                     *vbufman-contents*
 

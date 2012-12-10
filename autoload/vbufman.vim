@@ -26,7 +26,7 @@ endf
 
 fu vbufman#start(...)
 	let s:filter = s:new_filter(s:tracked_bufs)
-	if a:0 > 0
+	if a:0 > 0 && !empty(a:1)
 		call s:filter.set_input(a:1)
 	endif
 	call s:create_window()
@@ -57,7 +57,7 @@ fu s:new_filter(buffers)
 	let l:filt._inp = ''
 	let l:filt._rx = ['']
 	let l:filt._allbufs = a:buffers
-	let l:filt._bufs = copy(a:buffers)
+	let l:filt._bufs = filter(copy(a:buffers), 's:__filter_matchbuf(v:val, "")')
 	" methods
 	let l:filt.get_input = function('s:__filter_get_input')
 	let l:filt.set_input = function('s:__filter_set_input')
@@ -148,6 +148,8 @@ fu s:__filter_matchbuf(buf, rx)
 		return 0
 	elseif !g:vbufman_show_hidden && !buflisted(a:buf)
 		return 0
+	elseif empty(a:rx)
+		return 1
 	else
 		let l:name = bufname(a:buf)
 		return !empty(l:name) && l:name =~ a:rx
@@ -155,11 +157,12 @@ fu s:__filter_matchbuf(buf, rx)
 endf
 
 fu s:__filter_to_regex(str)
-	let l:rx = substitute(a:str, '^[*?]\+', '', '')
-	let l:rx = substitute(l:rx, '[*?]\+$', '', '')
-	let l:rx = substitute(l:rx, '?', '[^/\\]', 'g')
-	let l:rx = substitute(l:rx, '\*', '[^/\\]*', 'g')
-	return escape(l:rx, '^$.\~[]')
+	let l:rx = escape(a:str, '^$.\~[]')
+	let l:rx = substitute(l:rx, '^[*]\+', '', '')
+	let l:rx = substitute(l:rx, '[*]\+$', '', '')
+	let l:rx = substitute(l:rx, '?', '[^/\\\\]', 'g')
+	let l:rx = substitute(l:rx, '\*', '[^/\\\\]*', 'g')
+	return l:rx
 endf
 
 
@@ -300,8 +303,23 @@ endf
 
 
 fu s:open_buf(buf, dosplit)
-	call vbufman#stop()
+	sil! exe 'wincmd p'
+	let l:buf = bufnr('%')
+	if !buflisted(l:buf)
+		let l:idx = len(s:tracked_bufs)
+		while l:idx > 0
+			let l:idx -= 1
+			let l:curbuf = s:tracked_bufs[l:idx]
+			if l:curbuf != s:bufnum && buflisted(l:curbuf)
+				let l:buf = l:curbuf
+				break
+			endif
+		endwhile
+	endif
+	sil! exe 'wincmd p'
 
+	call vbufman#stop()
+	sil! exe l:buf.'wincmd w'
 	let l:cmd = !a:dosplit ? 'b' : g:vbufman_split_vertical ? 'vertical sb' : 'sb'
 	exe l:cmd.' '.a:buf
 endf
